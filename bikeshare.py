@@ -66,3 +66,56 @@ def trip_duration_stats(df):
     seconds = average_travel_duration.seconds % (60*60) % 60
 
     print('Average travel time is', days, 'days', hours, 'hours', minutes, 'minutes', seconds, 'seconds.')
+
+def user_stats(df):
+    #display the statistics on bikeshare users
+
+    print('\nCalculating User stats...\n')
+    start_time = time.time()
+
+    user_type = df['User Type'].value_counts()
+    print(user_type)
+
+    #Display the type of gender
+    if 'Gender' in (df.columns):
+        gender = df['Gender'].value_counts()
+        print(gender)
+
+    #Display the earliest, most recent and most common date of birth
+    if 'Birth Year' in (df.columns):
+        year = df['Birth Year'].fillna(0).astype('int64')
+        print('Earliest birth year is', year.min(), '\nMost recent birth year is', year.max(), '\nMost common birth year is', year.mode()[0])
+
+        
+    print("\nThis took %s seconds." % (time.time() - start_time))
+    print('-'*40)    
+
+def display_raw_data(df):
+    #display raw data and print 5 raw data at a time
+    raw = input('\nWould you like to display the raw data!\n')
+    if raw.lower() == 'yes':
+        count = 0
+        while True:
+            print(df.iloc[count: count + 5])
+            count =+ 5
+            ask = input('Next 5 raws?')
+            if ask.lower() != 'yes':
+                break
+
+def main():
+    while True:
+        city, month, day = get_filters()
+        df = load_data(city, month, day)
+
+        time_stats(df)
+        station_stats(df)
+        trip_duration_stats(df)
+        user_stats(df)
+        display_raw_data(df)
+
+        restart = input('\nWould you like to restart? Enter yes or no.\n')
+        if restart.lower() != 'yes':
+            break    
+
+if __name__ == "__main__":
+	main()
