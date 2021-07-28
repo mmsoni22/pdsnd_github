@@ -46,3 +46,30 @@ def get_filters():
 
     print('-'*40)
     return city, month, day     
+
+def load_data(city, month, day):
+    #Load the city data and filter it by month and day if applicable
+
+    #Load the data into dataframe
+    df = pd.read_csv(CITY_DATA[city])
+
+    #Convert start time column into datetime column
+    df['Start Time'] = pd.to_datetime(df['Start Time'])
+
+    #Extract the month and day from start time to create new column
+    df['month'] = df['Start Time'].dt.month
+    df['day_of_week'] = df['Start Time'].dt.day_name()
+
+    #filter by month if applicable
+    if month != 'all':
+        months = ['january', 'february', 'march', 'april', 'may', 'june']
+        month = months.index(month) + 1
+
+        #filter by month to create new dataframe
+        df = df[df['month'] == month]
+
+    #filter by day of the week if applicable
+    if day != 'all':
+        df = df[df['day_of_week'] == day.title()]
+
+    return df        
